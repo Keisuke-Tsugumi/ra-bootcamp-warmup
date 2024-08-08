@@ -1,5 +1,6 @@
 
 library(tidyverse)
+library(readxl)
 
 # (a) Semester Data -------------------------------------------------------
 
@@ -30,13 +31,37 @@ df_semester_dummy <-
          d_after_semester = if_else(semester_start_year == 1991, NA, d_after_semester))
 
 
-# (b) Graduate Date -------------------------------------------------------
+# (b) Gradrate Date -------------------------------------------------------
 
+path <- "data/raw/outcome"
 
+files_path <- list.files(path, full.names = T)
+files_name <- list.files(path) %>% 
+  str_sub(., 1, 4) %>% 
+  paste0("df_outcome_", .)
 
+list_df_outcome <- 
+  map(files_path, \(path){
+    read_xlsx(path)
+  }) %>% 
+  setNames(files_name)
 
+list_df_outcome <- 
+  list_df_outcome %>% 
+  map(., \(df){
+    df <- 
+      df %>% 
+      mutate(across(everything(), as.numeric)) %>% 
+      mutate(women_gradrate_4yr = women_gradrate_4yr * 0.01,
+             tot_gradrate_4yr = tot4yrgrads / totcohortsize,
+             men_gradrate_4yr = m_4yrgrads / m_cohortsize) %>% 
+      mutate(across(c(women_gradrate_4yr, tot_gradrate_4yr, men_gradrate_4yr), ~
+                    round(., 3)))
+  })
 
-
+df_outcome_1991_2010 <- 
+  list_df_outcome[1:19] %>% 
+  bind_rows()
 
 
 

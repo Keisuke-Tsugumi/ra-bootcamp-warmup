@@ -1,6 +1,7 @@
 
 library(tidyverse)
 library(readxl)
+library(stringr)
 
 # (a) Semester Data -------------------------------------------------------
 
@@ -64,45 +65,29 @@ df_outcome_1991_2010 <-
   bind_rows()
 
 
+# Covariates Data ---------------------------------------------------------
+
+df_covariates <- 
+  read_xlsx("data/raw/covariates/covariates.xlsx")
+
+df_covariates <- 
+  df_covariates %>% 
+  rename(unitid = university_id) %>% 
+  mutate(unitid = str_replace_all(unitid, "aaaa", ""),
+         across(-c(category), as.numeric)) %>% 
+  pivot_wider(names_from = category, values_from = value) %>% 
+  filter(year >= 1991 & year <= 2010)
+
+df_covariates <- 
+  df_outcome_1991_2010 %>% 
+  distinct(unitid, year) %>% 
+  left_join(., df_covariates, by = c("unitid", "year")) %>% 
+  arrange(unitid, year)
 
 
+# (d) Master Data -------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+df_master_data <-
+  df_semester_dummy %>% 
+  left_join(., df_covariates, by = c("unitid", "year")) %>% 
+  left_join(., df_outcome_1991_2010, by = c("unitid", "year"))

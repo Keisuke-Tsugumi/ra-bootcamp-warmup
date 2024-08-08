@@ -91,3 +91,7 @@ df_master_data <-
   df_semester_dummy %>% 
   left_join(., df_covariates, by = c("unitid", "year")) %>% 
   left_join(., df_outcome_1991_2010, by = c("unitid", "year"))
+
+# save data ---------------------------------------------------------------
+
+saveRDS(df_master_data, "data/analytic/df_master_data.rds")

@@ -72,19 +72,3 @@ result <-
 
 modelsummary::modelsummary(result)
   
-  
-  
-  
-  
-  
-  
-  
-
-
-
-
-
-
-
-
-

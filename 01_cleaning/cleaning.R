@@ -7,12 +7,19 @@ library(stringr)
 
 ## load data
 df_semester_dummy1 <- 
-  read.csv("data/raw/semester_dummy/semester_data_1.csv") %>% 
+  read.csv("data/raw/semester_dummy/semester_data_1.csv")
+
+df_semester_dummy2 <- 
+  read.csv("data/raw/semester_dummy/semester_data_2.csv")
+
+## rename vars
+df_semester_dummy1 <- 
+  df_semester_dummy1 %>% 
   rename_with(~ as.character(df_semester_dummy1[1, ])) %>% 
   slice(-1)
 
 df_semester_dummy2 <- 
-  read.csv("data/raw/semester_dummy/semester_data_2.csv") %>% 
+  df_semester_dummy2 %>% 
   rename_with(~ names(df_semester_dummy1))
 
 
